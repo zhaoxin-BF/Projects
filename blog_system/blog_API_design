@@ -1,0 +1,105 @@
+博客系统API设计
+
+一、标签管理API 
+1、新增博客
+2、获取博客列表
+3、获取某个博客的详情
+4、修改博客
+5、删除博客
+
+
+//1、新增博客
+POST/blog
+{
+    title:xxxx,
+    content:xxxx,
+    create_time:xxxx,
+    tag_id:xxxx,
+}
+HTTP/1.1 200 OK
+{
+    ok:true
+    reason:""
+}
+
+//2、获取博客列表(查看所有博客)
+GET/blog             获取所有
+GET/blog?tag_id=1    按照标签来筛选
+
+HTTP/1.1 200 OK
+[
+    {
+        blog_id:1,
+        tile:"我的第一篇博客",
+        create_time："2019/08/31",
+        tag_id:1
+    }
+]
+
+//3、获取某个博客的详情
+GET/blog/:blog_id    类似于/blog/10
+
+HTTP/1.1 200 OK
+[
+    {
+        blog_id:1,
+        tile:"我的第一篇博客",
+        content:"博客正文",
+        create_time："2019/08/31",
+        tag_id:1
+    }
+]
+
+//4、修改博客
+PUT/blog/:blog_id
+{
+    tile:"修改后的标题",
+    content:"修改后的内容",
+    tag_id:"修改后的tag_id"
+}
+HTTP1.1 200 OK
+{
+    OK:true
+}
+
+//5、删除博客
+DELETE/blog/:blog_id
+
+HTTP1.1 200 OK
+{
+    OK:true
+}
+
+
+二、标签管理API 
+//1、新增标签
+POST/tag
+{
+    "tag_name":"新增的标签名"
+}
+
+HTTP/1.1 200 ok
+{
+    OK:true
+}
+
+
+//2、删除标签
+DELETE/tag/:tag_id
+
+HTTP/1.1 200 ok
+{
+    OK:true
+}
+
+
+//3、查看所有标签
+GET/tag_id
+
+HTTP/1.1 200 ok
+[
+    {
+        tag_id:1,
+        tag_name:"C++"
+    }
+]
