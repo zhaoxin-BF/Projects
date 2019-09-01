@@ -28,9 +28,9 @@ void TestBlogTable(){
   //printf("%s\n", writer.write(blogs).c_str());
 
   //3、测试单个查找
-  //int ret = blog_table.SelectOne(4,&blog);
-  //printf("select one %d\n",ret);
-  //printf("blog : %s",writer.write(blog).c_str());
+  int ret = blog_table.SelectOne(1,&blog);
+  printf("select one %d\n",ret);
+  printf("blog : %s",writer.write(blog).c_str());
 
   //4、测试修改博客
   //blog["title"] = "第一篇修改的博客";
@@ -59,8 +59,8 @@ void TestTagTable()
   //printf("insert %d\n", ret);
 
   //2、测试标签删除
-  bool ret = tag_table.Delete(1);
-  printf("delete tag %d\n", ret);
+  //bool ret = tag_table.Delete(4);
+  //printf("delete tag %d\n", ret);
 
 
   //3、测试标签查找
@@ -76,7 +76,7 @@ void TestTagTable()
 
 int main()
 {
-  //TestBlogTable();
-  TestTagTable();
+  TestBlogTable();
+  //TestTagTable();
   return 0;
 }
