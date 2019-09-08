@@ -16,9 +16,9 @@ URL地址：/blog
 }  
 
 返回参数：  
-、、、  
+'<
 {  
     "ok": true,  
     "reason": "Success!"  
-}  
-、、、  
+} 
+>'
