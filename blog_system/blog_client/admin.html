@@ -1,0 +1,342 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>北峰博客管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="icon" type="image/png" href="assets/i/favicon.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="assets/i/app-icon72x72@2x.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+    <link rel="apple-touch-icon-precomposed" href="assets/i/app-icon72x72@2x.png">
+    <meta name="msapplication-TileImage" content="assets/i/app-icon72x72@2x.png">
+    <meta name="msapplication-TileColor" content="#0e90d2">
+    <link rel="stylesheet" href="assets/css/amazeui.min.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="editor.md/css/editormd.css" />
+
+    <!--style 标签中写的就是css  v-cloak 在渲染未完成之前，不现实丑陋的插值表达式-->
+    <style>
+        [v-cloak]{
+            display:none;
+        }
+    </style>
+</head>
+
+<body id="blog">
+    <!-- nav start -->
+    <nav class="am-g am-g-fixed blog-fixed blog-nav" style="margin:auto">
+        <button class=" am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only blog-button " data-am-collapse="{target: '#blog-collapse'} "><span class="am-sr-only ">导航切换</span> <span class="am-icon-bars "></span></button>
+
+        <div class="am-collapse am-topbar-collapse " id="blog-collapse ">
+            <ul class="am-nav am-nav-pills am-topbar-nav ">
+                <li class="am-active "><a href="index.html ">首页</a></li>
+                <li class="am-dropdown " data-am-dropdown>
+                    <a class="am-dropdown-toggle " data-am-dropdown-toggle href="javascript:; ">
+                  文章分类 <span class="am-icon-caret-down "></span>
+                </a>
+                    <ul class="am-dropdown-content ">
+                        <li><a href="# ">C++基础</a></li>
+                        <li><a href="# ">数据结构</a></li>
+                        <li><a href="# ">操作系统</a></li>
+                        <li><a href="# ">计算机网络</a></li>
+                    </ul>
+                </li>
+                <li><a href="article.html ">写文章</a></li>
+                <li><a href="timeline.html ">存档</a></li>
+            </ul>
+            <!--
+            <form class="am-topbar-form am-topbar-right am-form-inline " role="search ">
+                <div class="am-form-group ">
+                    <input type="text " class="am-form-field am-input-sm " placeholder="搜索 ">
+                </div>
+            </form>
+            -->
+        </div>
+    </nav>
+    <!-- nav end -->
+    <hr>
+    <!-- content srart -->
+    <div class="am-g am-g-fixed blog-fixed blog-content " id="app">
+        <div class="am-u-md-8 am-u-sm-12 " v-show="blog.blog_id == null">
+            <article class="am-g blog-entry-article"  v-for="blog in blogs" v-cloak>    <!--v-cloak 在渲染未完成之前，不现实丑陋的插值表达式-->
+                <div class="am-u-lg-10 am-u-md-12 am-u-sm-12 blog-entry-text ">
+                    <!--v-on:click 把当前的html标签关联上一个鼠标点击事件-->
+                    <h1><a v-on:click="edit_blog(blog.blog_id)">{{blog.title}}</a></h1>
+                    <span><a href=" " class="blog-color ">{{tag_id2name(blog.tag_id)}}&nbsp;</a></span>
+                    <span> @{{author}} &nbsp;</span><!--插值表达式-->
+                    <span>{{blog.create_time}}</span>
+                    <button type="button" class="am-btn am-btn-danger am-round" style="float:right" v-on:click="delete_blog(blog.blog_id)">删除</button>
+                </div>
+            </article>
+        </div>
+
+        <div class="am-u-md-12 am-u-sm-12 " v-show="blog.blog_id != null" v-cloak >
+            <div class="am-form-group am-form">
+                <label style="font-family:Microsoft YaHeia;font-size:80%;">博客标题</label>
+                <input type="text" class="" v-model="blog.title">
+            </div>
+            <!--先使用editor.md完成markdown到html的转换-->
+            <article id = "blog_view"> 
+                <textarea>{{blog.content}}</textarea>
+            </article>
+            <button v-on:click="back()" type="button" class=" am-u-md-6 am-btn am-btn-secondary am-round" >返回</button>
+            <button v-on:click="update_blog(blog.blog_id)" type="button" class=" am-u-md-6 am-btn am-btn-secondary am-round" >提交</button>
+        </div>
+
+        <div class="am-u-md-4 am-u-sm-12 blog-sidebar " v-cloak v-show="blog.blog_id == null"> <!--v-cloak 在渲染未完成之前，不现实丑陋的插值表达式-->
+            <div class="blog-sidebar-widget blog-bor ">
+                <h2 class="blog-text-center blog-title "><span>北峰科技园园长</span></h2>
+                <img src="assets/i/dog.jpg " alt="about me " class="blog-entry-img ">
+                <p>{{author}}</p>
+                <p>
+                    美好的事物总是稍纵即逝，我不敢太贪，红尘里，有缘自会相见！
+                </p>
+            </div>
+            <div class="blog-sidebar-widget blog-bor ">
+                <h2 class="blog-text-center blog-title "><span>点我点我啊</span></h2>
+                <p>
+                    <a href=" "><span class="am-icon-qq am-icon-fw am-primary blog-icon "></span></a>
+                    <a href="https://github.com/zhaoxin-BF"><span class="am-icon-github am-icon-fw blog-icon "></span></a>
+                    <a href=" "><span class="am-icon-weibo am-icon-fw blog-icon "></span></a>
+                    <a href=" "><span class="am-icon-weixin am-icon-fw blog-icon "></span></a>
+                </p>
+            </div>
+            <div class="blog-clear-margin blog-sidebar-widget blog-bor am-g ">
+                <h2 class="blog-title "><span>文章分类</span></h2>
+                <div class="am-u-sm-12 blog-clear-padding ">
+                <a href=" " class="blog-tag " v-for = "tag in tags" v-cloak>{{tag.tag_name}}</a>
+                
+                <!--  
+                    <a href=" " class="blog-tag ">C++基础</a>
+                    <a href=" " class="blog-tag ">C++进阶</a> 
+                    <a href=" " class="blog-tag ">数据结构</a>
+                    <a href=" " class="blog-tag ">计算机网络</a>
+                    <a href=" " class="blog-tag ">操作系统</a>
+                    <a href=" " class="blog-tag ">人工智能</a>
+                -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- content end -->
+    <footer class="blog-footer ">
+        <div class="am-g am-g-fixed blog-fixed am-u-sm-centered blog-footer-padding ">
+            <div class="am-u-sm-12 am-u-md-04- am-u-lg-4 ">
+                <h3>社交账号</h3>
+                <p>
+                    <a href=" "><span class="am-icon-qq am-icon-fw am-primary blog-icon blog-icon "></span></a>
+                    <a href=" "><span class="am-icon-github am-icon-fw blog-icon blog-icon "></span></a>
+                    <a href=" "><span class="am-icon-weibo am-icon-fw blog-icon blog-icon "></span></a>
+                    <a href=" "><span class="am-icon-weixin am-icon-fw blog-icon blog-icon "></span></a>
+                </p>
+            </div>
+        </div>
+        <div class="blog-text-center ">© 2019 北峰博客</div>
+    </footer>
+
+
+
+
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="assets/js/jquery.min.js "></script>
+<!--<![endif]-->
+<!--[if lte IE 8 ]>
+<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js "></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js "></script>
+<script src="assets/js/amazeui.ie8polyfill.min.js "></script>
+<![endif]-->
+
+<script src="editor.md/lib/marked.min.js"></script>
+<script src="editor.md/lib/prettify.min.js"></script>
+<script src="editor.md/lib/raphael.min.js"></script>
+<script src="editor.md/lib/underscore.min.js"></script>
+<script src="editor.md/lib/sequence-diagram.min.js"></script>
+<script src="editor.md/lib/flowchart.min.js"></script>
+<script src="editor.md/lib/jquery.flowchart.min.js"></script>
+<script src="editor.md/editormd.js"></script>
+
+
+<script src="assets/js/amazeui.min.js "></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el:'#app',    //el表示app这个Vue对象和那个HTML元素关联上.
+            data:{
+                //data表示所有需要在页面上动态变化的数据
+                //把JS中的数据和界面上的内容关联在一起，就称为数据绑定
+                author:'一颗大榴莲',
+                blogs:[
+                ],
+                tags:[
+                ],
+                //blog 对象用来保存当前页面上展示的博客详细内容
+                blog:{
+                    blog_id: null,
+                    title: null,
+                    conntent: null,
+                    create_time: null,
+                    tag_id: null,
+                }
+
+            },
+            methods:{
+                //函数
+                tag_id2name(tag_id){
+                    // this 访问到当前的app对象
+                    // this.tags就相当于上面定义的标签数组
+                    for(var index in this.tags){
+                        if(this.tags[index].tag_id == tag_id){
+                            return this.tags[index].tag_name;
+                        }
+                    }
+                    return "默认分类"
+                },
+                get_blogs(tag_id){
+                    var url ='/blog';
+                    if(tag_id!=null){
+                        url = '/blog/?tag_id' + tag_id;
+                    }
+                    //最核心操作。访问http服务器的数据
+                    // ajax原生API不好用。VUE也提供了API但是环境配置较麻烦
+                    // 此处我们使用JQuery提供的API
+                    $.ajax({
+                        'url':url,
+                        'type':"Get",
+                        context:this,//此处的this就表示Vue对象
+                        success:function(data, status){
+                            //data表示响应的body数据
+                            //status表示响应的状态码
+                            // HTTP请求执行成功之后，要执行的代码
+                            // 在这个代码中更新数据。
+                            // 如果不设置context，直接使用this.blogs是会出错的
+                            // 因为此时的this表示当前$这样的jquery对象 而不是Vue对象
+                            //加上 context 之后，this就表示 context 中的值
+                            this.blogs = data;
+                        }
+
+                    })
+                },
+                init() {
+                    //1.从服务器上获取tag
+                    $.ajax({
+                        'url':"/tag",
+                        'type':'get',
+                        context:this,
+                        success:function(data, status){
+                            this.tags = data;
+                            //2.从服务器上获取博客
+                            //更建议大家把get_blogs 写到回调内部
+                            //因为需要先获取到tag信息，然后才能获取博客列表，因为博客与tag有映射关系，
+                            this.get_blogs();
+                        }
+                    })
+                },
+                //点击博客标题来获取这个函数
+                get_blog(blog_id){
+                    $.ajax({
+                        url:'/blog/'+blog_id,
+                        type:'get',
+                        context:this,
+                        success:function(data, status){
+                            //此时得到的是markdown格式的数据
+                            this.blog = data;
+                            //把这个markdown格式的数据转成html,并显示
+
+                            testEditormdView = editormd.markdownToHTML("blog_view", {
+                                markdown        : this.blog.content ,//+ "\r\n" + $("#append-test").text(),
+                                //htmlDecode      : true,       // 开启 HTML 标签解析，为了安全性，默认不开启
+                                htmlDecode      : "style,script,iframe",  // you can filter tags decode
+                                //toc             : false,
+                                tocm            : true,    // Using [TOCM]
+                                //tocContainer    : "#custom-toc-container", // 自定义 ToC 容器层
+                                //gfm             : false,
+                                //tocDropdown     : true,
+                                // markdownSourceCode : true, // 是否保留 Markdown 源码，即是否删除保存源码的 Textarea 标签
+                                emoji           : true,
+                                taskList        : true,
+                                tex             : true,  // 默认不解析
+                                flowChart       : true,  // 默认不解析
+                                sequenceDiagram : true,  // 默认不解析
+                            });
+                        }
+                    })
+                },
+                //删除博客
+                delete_blog(blog_id){
+                    $.ajax({
+                        type:'delete',
+                        url:'/blog/'+blog_id,
+                        context:this,
+                        success:function(data, status){
+                            this.get_blogs();
+                            alert("删除成功！");
+                        }
+                    })
+                },
+                //编辑博客
+                edit_blog(blog_id){
+                    //1.先把之前的博客数据清空
+                    this.blog = {};
+                    //2.ajax 获取到当前点击的博客内容
+                    $.ajax({
+                        type:"get",
+                        url:'/blog/'+blog_id,
+                        context:this,
+                        success:function(data, status){
+                            this.blog = data;//获取数据
+                            //3. 根据数据加载markdown 编辑器
+                            testEditor = editormd("blog_view", {
+                                width   : "100%",
+                                height  : 640,
+                                syncScrolling : "single",
+                                path    : "editor.md/lib/"
+                            });
+                        }
+
+                    })
+                },
+                //返回
+                back(){
+                    this.blog = {};
+                },
+                //修改博客
+                update_blog(blog_id){
+                    //从编辑器中获取修改后的markdown数据
+                    var content = testEditor.getMarkdown();
+                    var body = {
+                        title: this.blog.title,
+                        content: content,
+                        tag_id: this.blog.tag_id,
+                    }
+                    $.ajax({
+                        url:'/blog/'+blog_id,
+                        type:'put',
+                        data:JSON.stringify(body),
+                        contentType:'application/json;charset=utf-8',
+                        context:this,
+                        success:function(data, status){
+                            this.get_blogs();
+                            alert("提交成功！");
+                            this.back();
+                        }
+                    })
+                }
+            }
+        });
+
+        //初始化的获取数据操作
+        app.init();
+
+    </script>
+</body>
+</html>
