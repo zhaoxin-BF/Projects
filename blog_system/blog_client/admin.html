@@ -31,27 +31,26 @@
     </style>
 </head>
 
-<body id="blog">
+<body >
+    <div id="blog">
     <!-- nav start -->
     <nav class="am-g am-g-fixed blog-fixed blog-nav" style="margin:auto">
         <button class=" am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only blog-button " data-am-collapse="{target: '#blog-collapse'} "><span class="am-sr-only ">导航切换</span> <span class="am-icon-bars "></span></button>
 
         <div class="am-collapse am-topbar-collapse " id="blog-collapse ">
             <ul class="am-nav am-nav-pills am-topbar-nav ">
-                <li class="am-active "><a href="index.html ">首页</a></li>
+                <li class="am-active "><a href="admin.html">首页</a></li>
                 <li class="am-dropdown " data-am-dropdown>
                     <a class="am-dropdown-toggle " data-am-dropdown-toggle href="javascript:; ">
                   文章分类 <span class="am-icon-caret-down "></span>
                 </a>
-                    <ul class="am-dropdown-content ">
-                        <li><a href="# ">C++基础</a></li>
-                        <li><a href="# ">数据结构</a></li>
-                        <li><a href="# ">操作系统</a></li>
-                        <li><a href="# ">计算机网络</a></li>
-                    </ul>
+                <ul class="am-dropdown-content " >
+                        <li><a v-on:click="get_blogs(tag.tag_id)" v-for = "tag in tags" v-cloak>{{tag.tag_name}}</a></li>
+                </ul>
                 </li>
-                <li><a href="article.html ">写文章</a></li>
+                <li><a href="write.html ">写文章</a></li>
                 <li><a href="timeline.html ">存档</a></li>
+                <li><a href="index.html ">游客端</a></li>
             </ul>
             <!--
             <form class="am-topbar-form am-topbar-right am-form-inline " role="search ">
@@ -71,7 +70,7 @@
                 <div class="am-u-lg-10 am-u-md-12 am-u-sm-12 blog-entry-text ">
                     <!--v-on:click 把当前的html标签关联上一个鼠标点击事件-->
                     <h1><a v-on:click="edit_blog(blog.blog_id)">{{blog.title}}</a></h1>
-                    <span><a href=" " class="blog-color ">{{tag_id2name(blog.tag_id)}}&nbsp;</a></span>
+                    <span><a v-on:click="get_blogs(blog.tag_id)" class="blog-color ">{{tag_id2name(blog.tag_id)}}&nbsp;</a></span>
                     <span> @{{author}} &nbsp;</span><!--插值表达式-->
                     <span>{{blog.create_time}}</span>
                     <button type="button" class="am-btn am-btn-danger am-round" style="float:right" v-on:click="delete_blog(blog.blog_id)">删除</button>
@@ -104,39 +103,44 @@
             <div class="blog-sidebar-widget blog-bor ">
                 <h2 class="blog-text-center blog-title "><span>点我点我啊</span></h2>
                 <p>
-                    <a href=" "><span class="am-icon-qq am-icon-fw am-primary blog-icon "></span></a>
+                    <a href="assets/i/zhaoxin_QQ.jpg"><span class="am-icon-qq am-icon-fw am-primary blog-icon "></span></a>
                     <a href="https://github.com/zhaoxin-BF"><span class="am-icon-github am-icon-fw blog-icon "></span></a>
-                    <a href=" "><span class="am-icon-weibo am-icon-fw blog-icon "></span></a>
-                    <a href=" "><span class="am-icon-weixin am-icon-fw blog-icon "></span></a>
+                    <a href="https://weibo.com/u/6167926852"><span class="am-icon-weibo am-icon-fw blog-icon "></span></a>
+                    <a href="assets/i/zhaoxin_weixin.jpg"><span class="am-icon-weixin am-icon-fw blog-icon "></span></a>
                 </p>
             </div>
             <div class="blog-clear-margin blog-sidebar-widget blog-bor am-g ">
                 <h2 class="blog-title "><span>文章分类</span></h2>
                 <div class="am-u-sm-12 blog-clear-padding ">
-                <a href=" " class="blog-tag " v-for = "tag in tags" v-cloak>{{tag.tag_name}}</a>
-                
-                <!--  
-                    <a href=" " class="blog-tag ">C++基础</a>
-                    <a href=" " class="blog-tag ">C++进阶</a> 
-                    <a href=" " class="blog-tag ">数据结构</a>
-                    <a href=" " class="blog-tag ">计算机网络</a>
-                    <a href=" " class="blog-tag ">操作系统</a>
-                    <a href=" " class="blog-tag ">人工智能</a>
-                -->
+                <a v-on:click="get_blogs(tag.tag_id)" class="blog-tag " v-for = "tag in tags" v-cloak>{{tag.tag_name}}</a>
                 </div>
             </div>
         </div>
     </div>
+    
+</div>
+    <!-- content end -->
     <!-- content end -->
     <footer class="blog-footer ">
         <div class="am-g am-g-fixed blog-fixed am-u-sm-centered blog-footer-padding ">
-            <div class="am-u-sm-12 am-u-md-04- am-u-lg-4 ">
-                <h3>社交账号</h3>
+            <div class="am-u-sm-12 am-u-md-6- am-u-lg-6">
+                    <h2>今日金句</h2>
+                    <p class="am-text-sm" style="font-size: 20px">
+                        慈不掌兵，义不行商，情不立事，善不为官<br>
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        ————《增广贤文》
+                    </p>
+            </div>
+            <div class="am-u-sm-12 am-u-md-6- am-u-lg-4 ">
+                <h2>社交账号</h2>
                 <p>
-                    <a href=" "><span class="am-icon-qq am-icon-fw am-primary blog-icon blog-icon "></span></a>
-                    <a href=" "><span class="am-icon-github am-icon-fw blog-icon blog-icon "></span></a>
-                    <a href=" "><span class="am-icon-weibo am-icon-fw blog-icon blog-icon "></span></a>
-                    <a href=" "><span class="am-icon-weixin am-icon-fw blog-icon blog-icon "></span></a>
+                    <a href="assets/i/zhaoxin_QQ.jpg"><span class="am-icon-qq am-icon-fw am-primary blog-icon blog-icon "></span></a>
+                    <a href="https://github.com/zhaoxin-BF"><span class="am-icon-github am-icon-fw blog-icon blog-icon "></span></a>
+                    <a href="https://weibo.com/u/6167926852"><span class="am-icon-weibo am-icon-fw blog-icon blog-icon "></span></a>
+                    <a href="assets/i/zhaoxin_weixin.jpg"><span class="am-icon-weixin am-icon-fw blog-icon blog-icon "></span></a>
                 </p>
             </div>
         </div>
@@ -170,7 +174,7 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
         var app = new Vue({
-            el:'#app',    //el表示app这个Vue对象和那个HTML元素关联上.
+            el:'#blog',    //el表示app这个Vue对象和那个HTML元素关联上.
             data:{
                 //data表示所有需要在页面上动态变化的数据
                 //把JS中的数据和界面上的内容关联在一起，就称为数据绑定
@@ -204,7 +208,7 @@
                 get_blogs(tag_id){
                     var url ='/blog';
                     if(tag_id!=null){
-                        url = '/blog/?tag_id' + tag_id;
+                        url = '/blog/tag_id/' + tag_id;
                     }
                     //最核心操作。访问http服务器的数据
                     // ajax原生API不好用。VUE也提供了API但是环境配置较麻烦

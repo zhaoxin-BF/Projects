@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>北峰博客管理</title>
+    <title>写博客界面</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <link rel="icon" type="image/png" href="assets/i/favicon.png">
@@ -31,67 +31,48 @@
     </style>
 </head>
 
-<body id="blog">
-    <!-- nav start -->
-    <nav class="am-g am-g-fixed blog-fixed blog-nav" style="margin:auto">
-        <button class=" am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only blog-button " data-am-collapse="{target: '#blog-collapse'} "><span class="am-sr-only ">导航切换</span> <span class="am-icon-bars "></span></button>
-
-        <div class="am-collapse am-topbar-collapse " id="blog-collapse ">
-            <ul class="am-nav am-nav-pills am-topbar-nav ">
-                <li class="am-active "><a href="index.html ">首页</a></li>
-                <li class="am-dropdown " data-am-dropdown>
-                    <a class="am-dropdown-toggle " data-am-dropdown-toggle href="javascript:; ">
-                  文章分类 <span class="am-icon-caret-down "></span>
-                </a>
-                    <ul class="am-dropdown-content ">
-                        <li><a href="# ">C++基础</a></li>
-                        <li><a href="# ">数据结构</a></li>
-                        <li><a href="# ">操作系统</a></li>
-                        <li><a href="# ">计算机网络</a></li>
-                    </ul>
-                </li>
-                <li><a href="write.html ">写文章</a></li>
-                <li><a href="timeline.html ">存档</a></li>
-            </ul>
-            <!--
-            <form class="am-topbar-form am-topbar-right am-form-inline " role="search ">
-                <div class="am-form-group ">
-                    <input type="text " class="am-form-field am-input-sm " placeholder="搜索 ">
-                </div>
-            </form>
-            -->
-        </div>
-    </nav>
-    <!-- nav end -->
-    <hr>
+<body >
     <!-- content srart -->
     <div class="am-g am-g-fixed blog-fixed blog-content " id="app">
         <div class="am-u-md-12 am-u-sm-12 " v-cloak >
             <div class="am-form-group am-form">
-                <label style="font-family:Microsoft YaHeia;font-size:80%;">博客标题</label>
-                <input type="text" class="" value="title">
-                <label style="font-family:Microsoft YaHeia;font-size:80%;">博客标题</label>
-                <input type="text" class="" value="tag_id">
+                <label style="font-family:Microsoft YaHeia;font-size:25px;">博客标题</label>
+                <input type="text" class="" value="请输入博客标题" id="title">
+                <label style="font-family:Microsoft YaHeia;font-size:25px;">博客标签</label><br>
+                <label v-for = "tag in tags"><input name="tag" type="radio" value={{tag.tag_id}}/>{{tag.tag_id}}:{{tag.tag_name}}</label>
+                <input type="text" class="" value="输入博客标签待开发" id="tag_id">
             </div>
             <!--先使用editor.md完成markdown到html的转换-->
             <article id = "blog_view"> 
                 <textarea>{{blog.content}}</textarea>
             </article>
             <button v-on:click="back()" type="button" class=" am-u-md-6 am-btn am-btn-secondary am-round" >返回</button>
-            <button v-on:click="update_blog(blog.blog_id)" type="button" class=" am-u-md-6 am-btn am-btn-secondary am-round" >提交</button>
+            <button v-on:click="insert_blog()" type="button" class=" am-u-md-6 am-btn am-btn-secondary am-round" >提交</button>
         </div>
     </div>
 
     <!-- content end -->
+    <!-- content end -->
     <footer class="blog-footer ">
         <div class="am-g am-g-fixed blog-fixed am-u-sm-centered blog-footer-padding ">
-            <div class="am-u-sm-12 am-u-md-04- am-u-lg-4 ">
-                <h3>社交账号</h3>
+            <div class="am-u-sm-12 am-u-md-6- am-u-lg-6">
+                    <h2>今日金句</h2>
+                    <p class="am-text-sm" style="font-size: 20px">
+                        慈不掌兵，义不行商，情不立事，善不为官<br>
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        ————《增广贤文》
+                    </p>
+            </div>
+            <div class="am-u-sm-12 am-u-md-6- am-u-lg-4 ">
+                <h2>社交账号</h2>
                 <p>
-                    <a href=" "><span class="am-icon-qq am-icon-fw am-primary blog-icon blog-icon "></span></a>
-                    <a href=" "><span class="am-icon-github am-icon-fw blog-icon blog-icon "></span></a>
-                    <a href=" "><span class="am-icon-weibo am-icon-fw blog-icon blog-icon "></span></a>
-                    <a href=" "><span class="am-icon-weixin am-icon-fw blog-icon blog-icon "></span></a>
+                    <a href="assets/i/zhaoxin_QQ.jpg"><span class="am-icon-qq am-icon-fw am-primary blog-icon blog-icon "></span></a>
+                    <a href="https://github.com/zhaoxin-BF"><span class="am-icon-github am-icon-fw blog-icon blog-icon "></span></a>
+                    <a href="https://weibo.com/u/6167926852"><span class="am-icon-weibo am-icon-fw blog-icon blog-icon "></span></a>
+                    <a href="assets/i/zhaoxin_weixin.jpg"><span class="am-icon-weixin am-icon-fw blog-icon blog-icon "></span></a>
                 </p>
             </div>
         </div>
@@ -127,9 +108,9 @@
         var app = new Vue({
             el:'#app',    //el表示app这个Vue对象和那个HTML元素关联上.
             data:{
-                //data表示所有需要在页面上动态变化的数据
-                //把JS中的数据和界面上的内容关联在一起，就称为数据绑定
-                //blog 对象用来保存当前页面上展示的博客详细内容
+                tags:[
+
+                ],
                 blog:{
                     blog_id: null,
                     title: null,
@@ -154,31 +135,51 @@
                         path    : "editor.md/lib/"
                     });
                 },
+                //获取博客标签
+                init() {
+                    //1.从服务器上获取tag
+                    $.ajax({
+                        'url':"/tag",
+                        'type':'get',
+                        context:this,
+                        success:function(data, status){
+                            this.tags = data;
+                            //2.从服务器上获取博客
+                            //更建议大家把get_blogs 写到回调内部
+                            //因为需要先获取到tag信息，然后才能获取博客列表，因为博客与tag有映射关系，
+                        }
+                    })
+                },
                 //返回
                 back(){
                     window.location.href="admin.html";
                 },
-                //修改博客
-                update_blog(){
-                    //从编辑器中获取修改后的markdown数据
+                //插入博客
+                insert_blog(){
+                    //从编辑器中获取输入的markdown数据
                     var title = document.getElementById('title').value;
+
                     var create_time = new Date();  
+                    var year = create_time.getFullYear();
+                    var month = create_time.getMonth()+1;
+                    var day = create_time.getDate();
+                    create_time = year+"/"+month+"/"+day;
                     var tag_id = document.getElementById('tag_id').value;
                     var content = testEditor.getMarkdown();
+
                     var body = {
                         title: title,
                         content: content,
-                        tag_id: tag_id,
+                        tag_id: parseInt(tag_id),//转换为int类型的数据
                         create_time:create_time,
                     }
                     $.ajax({
-                        url:'/blog/'+blog_id,
+                        url:'/blog',
                         type:'post',
                         data:JSON.stringify(body),
                         contentType:'application/json;charset=utf-8',
                         context:this,
                         success:function(data, status){
-                            this.get_blogs();
                             alert("提交成功！");
                             this.back();
                         }
@@ -188,6 +189,7 @@
         });
 
         //初始化的获取数据操作
+        app.init();
         app.edit_blog();
 
     </script>
