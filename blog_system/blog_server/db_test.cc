@@ -1,5 +1,6 @@
 #include "db.hpp"
-
+#include <string>
+using namespace std;
 //单元测试，根据模块或者函数来进行测试，一般是写完一个封装函数或者模块来进行测试
 //使用这个来测试刚才封装的 MySQL 操作是否正确
 
@@ -25,12 +26,22 @@ void TestBlogTable(){
   //Json::Value blogs;
   //int ret = blog_table.SelectAll(&blogs);
   //printf("Select all %d\n", ret);
+  //json序列化输出 writer 定义在该文件头部，请参考
   //printf("%s\n", writer.write(blogs).c_str());
 
+  //2_1、测试根据标签查找
+  Json::Value blogs;
+  string tag_id="1";
+  int ret = blog_table.SelectAll(&blogs, tag_id);
+  printf("Select all %d\n", ret);
+  //json序列化输出 writer 定义在该文件头部，请参考
+  printf("%s\n", writer.write(blogs).c_str());
+  
+
   //3、测试单个查找
-  int ret = blog_table.SelectOne(1,&blog);
-  printf("select one %d\n",ret);
-  printf("blog : %s",writer.write(blog).c_str());
+  //int ret = blog_table.SelectOne(1,&blog);
+  //printf("select one %d\n",ret);
+  //printf("blog : %s",writer.write(blog).c_str());
 
   //4、测试修改博客
   //blog["title"] = "第一篇修改的博客";
