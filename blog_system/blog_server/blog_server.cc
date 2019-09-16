@@ -15,7 +15,7 @@ int main() {
   //1、与数据库建立连接
   mysql = blog_system::MySQLInit();
   signal(SIGINT,[](int){blog_system::MYSQLRelease(mysql); exit(1);});
-  //ctrl + c 出发sigint信号，当按下ctrl+c的时候，数据库就会退出
+  //ctrl + c 出发sigint信号，当按下ctrl+c的时候，数据库就会退出,exit(1)结束进程
   
   //2、创建相关的操作对像
   BlogTable blog_table(mysql);
@@ -91,7 +91,7 @@ server.Get("/blog",[&blog_table](const Request& req, Response& resp)
       printf("查看所有博客。\n");
       //1.尝试获取所有博客
       const std::string& tag_id = req.get_param_value("tag_id",0);
-
+      
       //获取某个键位相对应的值位，这里的key就是tag_id.值位就是id值了
       //这里还有一种就是tag_id参数为空的情况，这种场景下就直接返回所有博客就可以了
       //也不需要在进行什么合法性的判定
@@ -118,7 +118,38 @@ server.Get("/blog",[&blog_table](const Request& req, Response& resp)
       return ;
     });
 
-//业务三：查看某个博客情况(Postman 检测合格)
+server.Get(R"(/blog/tag_id/(\d+))",[&blog_table](const Request& req, Response& resp)
+    {
+      printf("查看所有博客。\n");
+      //1.尝试获取所有博客
+      const std::string& tag_id = req.matches[1].str();
+      
+      //获取某个键位相对应的值位，这里的key就是tag_id.值位就是id值了
+      //这里还有一种就是tag_id参数为空的情况，这种场景下就直接返回所有博客就可以了
+      //也不需要在进行什么合法性的判定
+      Json::FastWriter writer;
+      Json::Value req_json;
+      Json::Value resp_json;
+
+      //调用数据库操作来获取所有博客查询结果
+      bool ret = blog_table.SelectAll(&req_json, tag_id);
+      if(!ret)
+      {
+        printf("查找博客失败！\n");
+        resp_json["ok"] = false;
+        resp_json["reason"] = "SelecteAll failed unexcept problem!";
+        resp.status = 500;
+        resp.set_content(writer.write(resp_json),"application/json");
+        return ;
+      }
+
+      //查询正确，构造正确的响应结果发送给客户端
+      resp_json["ok"] = true;
+      resp.status = 200;
+      resp.set_content(writer.write(req_json),"application/json");
+      return ;
+    });
+//业务三：查看某个博客情况(Postman 检测合格) 
 server.Get(R"(/blog/(\d+))", [&blog_table](const Request& req, Response& resp){
       Json::FastWriter writer;
       //1.解析到过去的blog_id
@@ -327,8 +358,8 @@ server.Delete(R"(/blog/(\d+))", [&blog_table](const Request& req, Response& resp
         resp.set_content(writer.write(resp_json), "application/json");
         return ;
       });
-  server.set_base_dir("/root/wwwroot");
-  server.listen("0.0.0.0",8888);
+  server.set_base_dir("/root/wwwroot");//设置基本目录
+  server.listen("0.0.0.0",8888);//监听8888店口
   return 0;
 }
 
