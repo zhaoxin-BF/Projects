@@ -11,7 +11,7 @@
 
 
 namespace blog_system{
-//函数一“与MySQL建立连接
+  //函数一“与MySQL建立连接
 static MYSQL* MySQLInit(){
   //初始化一个MySQL句柄并建立连接
   //1.创建连接句柄
@@ -58,23 +58,34 @@ public:
   //  tag_id:"标签id",
   //}
   //用json当参数，最大的好处就是方便扩展
+  
+  //一、插入博客操作
   bool Insert(const Json::Value& blog){
+
+    //先获取正文，为转换座准备；
     const std::string& content = blog["content"].asCString();
+    
     //为什么to的长度是2*size + 1 这是文档要求
     //char* to = new char[content.size() * 2 + 1];
     
     // 智能指针 方便释放内存。
+    // 为什么会是unique智能指针呢？
+    // 因为unique是在函数内部使用，而shared有可能要交给函数外部使用。
+    // 智能指针，需要包含头文件 #include <memory> 
     std::unique_ptr<char> to(new char[content.size() * 2 + 1]);
-    mysql_real_escape_string(mysql_,to.get(),    
-        content.c_str(), content.size());
+
+    //mysql自动转义,如果content中有''的话，拼接字符串就会出现问题；所以必须进行转义
+    mysql_real_escape_string(mysql_, to.get(), content.c_str(), content.size());
+    
     
     //核心就是拼装SQL语句1024*100(100字节)
     //智能指针，动态开辟空间，方便扩容(因为不知道文章会是多大)
+    //所以sql语句拼接多长，也没办法确认，所以sql也必须用智能来管理动态开辟的内存
     std::unique_ptr<char> sql(new char[content.size()*2 + 4096]);
 
     sprintf(sql.get(),"insert into blog_table values(null,'%s','%s',%d,'%s')",
         blog["title"].asCString(),
-        to.get(),
+        to.get(),//将转义后的文章内容拼接进入sql语句
         blog["tag_id"].asInt(),
         blog["create_time"].asCString());
     
@@ -88,6 +99,7 @@ public:
     return true;
   }
 
+  //二、查询所有博客文章
   //blogs 作为一个输出型参数。
   bool SelectAll(Json::Value* blogs, const std::string& tag_id = ""){
     //查找不需要 拼接很长的字符串
@@ -95,10 +107,10 @@ public:
     if(tag_id == "")
     {
       //此时不需要按照tag来筛选结果
-      sprintf(sql,"select blog_id,title,tag_id,create_time from blog_table");
+      sprintf(sql,"select blog_id,title,tag_id,create_time from blog_table order by create_time desc");
     } else{
       //此时需要按tag来筛选 
-      sprintf(sql,"select blog_id,title,tag_id,create_time from blog_table where tag_id = %d",std::stoi(tag_id));//string 转 int 
+      sprintf(sql,"select blog_id,title,tag_id,create_time from blog_table where tag_id = %d order by create_time desc",std::stoi(tag_id));//string 转 int 
     }
 
     int ret = mysql_query(mysql_, sql);
@@ -125,7 +137,7 @@ public:
       blog["title"] = row[1];
       blog["tag_id"] = atoi(row[2]);
       blog["create_time"] = row[3];
-      blogs->append(blog);
+      blogs->append(blog);// 添加到传入传出参数blogs中
     }
     //result结果集需要及时释放
     mysql_free_result(result);
@@ -133,6 +145,7 @@ public:
     return true;
   }
   
+  //三、查询某一个博客文章
   //blog 同样是输出型参数，根据当前的blog_id 在数据库中找到具体的blog
   //博客内容通过blog 参数返回给调用者
   bool SelectOne(int32_t blog_id, Json::Value* blog){
@@ -162,6 +175,7 @@ public:
   }
 
 
+  //四、更新某一博客
   bool Upadte(const Json::Value& blog){  
     const std::string& content = blog["content"].asCString();
     //为什么to的长度是2*size + 1 这是文档要求
@@ -186,6 +200,7 @@ sprintf(sql.get(),"update blog_table set title = '%s',content='%s',tag_id=%d whe
     return true;
   }
 
+  //五、删除某一博客
   bool Delete(int32_t blog_id){
     char sql[1024 * 4] = {0};
     sprintf(sql, "Delete from blog_table where blog_id = %d",
@@ -203,10 +218,14 @@ private:
   MYSQL* mysql_;
 };
 
+
+////////////////////////////////////////
+//封装一个标签操作类TagTable
 class TagTable{ 
 public:
   TagTable(MYSQL* mysql):mysql_(mysql){}
 
+  //一、插入标签
   bool Insert(const Json::Value& tag){
     char sql[1024 * 4];
     sprintf(sql,"Insert into tag_table values(null,'%s')",
@@ -221,6 +240,7 @@ public:
     return true;
   }
 
+  //二、删除标签
   bool Delete(int32_t tag_id){
     char sql[1024 * 4];
     sprintf(sql,"Delete from tag_table where tag_id=%d",tag_id);
@@ -236,6 +256,7 @@ public:
     return true;
   }
 
+  //三、查看所有标签
   bool SelectAll(Json::Value* tags){
     char sql[1024 * 4];
     sprintf(sql,"select * from tag_table;");
@@ -249,10 +270,10 @@ public:
     int rows = mysql_num_rows(result);
     for(int i = 0;i < rows; ++i){
       MYSQL_ROW row = mysql_fetch_row(result);
-      Json::Value tag;
-      tag["tag_id"] = atoi(row[0]);
-      tag["rag_name"] = row[1];
-      tags->append(tag);
+      Json::Value tag;//创建一个json数据格式的tag变量
+      tag["tag_id"] = atoi(row[0]);//给tag变量元素赋值
+      tag["tag_name"] = row[1];
+      tags->append(tag);// 添加到传入传出参数tags中
     }
 
     printf("查找标签成功！\n");
