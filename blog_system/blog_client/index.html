@@ -65,7 +65,7 @@
             <article class="am-g blog-entry-article"  v-for="blog in blogs" v-cloak>
                 <div class="am-u-lg-10 am-u-md-12 am-u-sm-12 blog-entry-text ">
                     <!--v-on:click 把当前的html标签关联上一个鼠标点击事件-->
-                    <h1><a v-on:click="get_blog(blog.blog_id)">{{blog.title}}</a></h1>
+                    <h1><a v-on:click="jump(blog.blog_id)">{{blog.title}}</a></h1>
                     <span><a v-on:click="get_blogs(blog.tag_id)" class="blog-color ">{{tag_id2name(blog.tag_id)}}&nbsp;</a></span>
                     <span> @{{author}} &nbsp;</span><!--插值表达式-->
                     <span>{{blog.create_time}}</span>
@@ -259,8 +259,14 @@
                         }
                     })
                 },
+                //方案一：重定向到另一界面显示文章内容
+                jump(blog_id){
+                    url = "article.html?blog_id="+blog_id;//此处跳转到b并且传递参数blog_id
+                    window.location.href = url;
+                },
+                //方案二：直接异步显示在本页面
                 //点击博客标题来获取这个函数
-                get_blog(blog_id){
+                /*get_blog(blog_id){
                     $.ajax({
                         url:'/blog/'+blog_id,
                         type:'get',
@@ -288,7 +294,7 @@
                             });
                         }
                     })
-                }
+                }*/
             }
         });
 
