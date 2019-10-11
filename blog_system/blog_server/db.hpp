@@ -62,7 +62,7 @@ public:
   //一、插入博客操作
   bool Insert(const Json::Value& blog){
 
-    //先获取正文，为转换座准备；
+    //先获取正文，为转换做准备；
     const std::string& content = blog["content"].asCString();
     
     //为什么to的长度是2*size + 1 这是文档要求
@@ -107,10 +107,10 @@ public:
     if(tag_id == "")
     {
       //此时不需要按照tag来筛选结果
-      sprintf(sql,"select blog_id,title,tag_id,create_time from blog_table order by create_time desc");
+      sprintf(sql,"select blog_id,title,tag_id,create_time from blog_table order by blog_id desc");
     } else{
       //此时需要按tag来筛选 
-      sprintf(sql,"select blog_id,title,tag_id,create_time from blog_table where tag_id = %d order by create_time desc",std::stoi(tag_id));//string 转 int 
+      sprintf(sql,"select blog_id,title,tag_id,create_time from blog_table where tag_id = %d order by blog_id desc",std::stoi(tag_id));//string 转 int 
     }
 
     int ret = mysql_query(mysql_, sql);
