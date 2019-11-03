@@ -35,12 +35,12 @@
     <!-- content srart -->
     <div class="am-g am-g-fixed blog-fixed blog-content " id="app">
         <div class="am-u-md-12 am-u-sm-12 " v-cloak >
-            <div class="am-form-group am-form">
+            <div class="am-form-group am-form">o
                 <label style="font-family:Microsoft YaHeia;font-size:25px;">博客标题</label>
                 <input type="text" class="" value="请输入博客标题" id="title">
-                <label style="font-family:Microsoft YaHeia;font-size:25px;">博客标签</label><br>
+                <label style="font-family:Microsoft YaHeia;fnt-size:25px;">博客标签</label><br>
                 <label v-for = "tag in tags"><input name="tag" type="radio" value={{tag.tag_id}}/>{{tag.tag_id}}:{{tag.tag_name}}</label>
-                <input type="text" class="" value="输入博客标签待开发" id="tag_id">
+                <input type="text" class="" value="请输入博客标签编号" id="tag_id">
             </div>
             <!--先使用editor.md完成markdown到html的转换-->
             <article id = "blog_view"> 

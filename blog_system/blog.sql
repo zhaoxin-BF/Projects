@@ -32,6 +32,11 @@ create table tag_table(
 );
 
 
+#查看MySQL表的创建信息
+#desc blog_table 
+
+
+
 #执行的语句
 #mysql -u root < mariadb.sql
 #利用重定向把标准输出来进行重定向

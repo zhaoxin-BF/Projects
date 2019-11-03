@@ -1,4 +1,5 @@
-FLAG=-std=c++11 -L/usr/lib64/mysql -lmysqlclient -ljsoncpp -lpthread
+#定义变量
+FLAG = -std=c++11 -L/usr/lib64/mysql -lmysqlclient -ljsoncpp -lpthread 
 
 .PHONY:all 
 all:db_test server_blog 

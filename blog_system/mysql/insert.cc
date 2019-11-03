@@ -61,7 +61,7 @@ int main()
 		mysql_close(connect_fd);
 		return 1;
 	}
-  	printf("插入成功！\n");
+  printf("插入成功！\n");
 	// 6.关闭连接
 	mysql_close(connect_fd);
 
