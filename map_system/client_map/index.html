@@ -1,29 +1,47 @@
 <!DOCTYPE html>
 
 <style>
-    topbar_container{
-        padding: 3px 0;
-        font-size: 15px;
-        color: #3385ff;
-    }
+	.flex-container {
+  		display: flex;
+	}
 </style>
 
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
 	<style type="text/css">
 		body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
-		#allmap{height:1000px;width:100%;}
+		#allmap{height:600px;width:100%;}
 		#r-result{width:100%;}
 	</style>
 	<script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=llO66eNwUn9Lk61GBFKL2t9LVKra4E8O"></script>
 	<title>百度地图</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div id="r-result" style="height: 60px; padding-top: 20px; background:#248aff; color:snow">
-        请输入地名:<input type="text" id="suggestId" size="20" value="百度" placeholder="请输入地点" style="width:300px;" />
-        请输入范围:<input type="number" id="suggestRange" size="20" value="500"  style="width:100px;" />
+	<div id="r-result" style=" padding-top: 6px; padding-bottom: 6px; background:#248aff; color:black" class="flex-container">
+		<div>
+			<div>
+				地名:<input type="text" id="suggestId" size="20" value="百度" placeholder="请输入地点" style="width:300px;" />
+				<button type="button" id="btn_refresh" class="btn btn-success">刷新</button>
+				店名:<input type="text" id="name" size="20" value=""  placeholder="请输入店名、ID" style="width:120px;" />
+				范围:<input type="number" id="suggestRange" size="20" value="500"  style="width:100px;" />
+				颜色:<input type="text" id="color" size="20" value="green"  placeholder="请选择颜色" style="width:100px;" />
+				<button type="button" id="btn_Update" class="btn btn-info">修改店铺</button>
+				<button type="button" id="btn_Insert" class="btn btn-warning">添加店铺</button>
+				<button type="button" id="btn_Delete" class="btn btn-danger">删除店铺</button>
+			</div>
+			<div>
+				
+			</div>
+		</div>
+
     </div>
     <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
    
@@ -31,6 +49,7 @@
 </body>
 </html>
 
+<script src="assets/js/jquery.min.js "></script>
 <script type="text/javascript">
 	////////////////////////////////////////////////////////////////
 	// 百度地图API功能_1初始化地图
@@ -83,9 +102,10 @@
 		setPlace();
 	});
 
-	var content = myValue;
+	var content = myValue;//新增店铺信息
+	var lng=0;//新增店铺信息需要
+	var lat=0;
 	function setPlace(){
-		map.clearOverlays();    //清除地图上所有覆盖物
 		function myFun(){
 			var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
             map.centerAndZoom(pp, 16);
@@ -93,14 +113,14 @@
             var  suggestRange= document.getElementById('suggestRange').value;//圆圈的半径大小
 
 			var marker = new BMap.Marker(pp);//标注的位置
-
-
+			lng = pp.lng;//新增店铺信息需要
+			lat = pp.lat;
             map.addOverlay(marker);    //添加标注
 
             map.addOverlay(new BMap.Circle(pp,suggestRange,{strokeColor:"green", strokeWeight:4, strokeOpacity:10,fillColor:"PaleGreen"}));
 			var opts = {
-				width : 200,     // 信息窗口宽度
-				height: 80,     // 信息窗口高度
+				width : 180,     // 信息窗口宽度
+				height: 50,     // 信息窗口高度
 				title : "信息窗口" , // 信息窗口标题
 				enableMessage:true//设置允许信息窗发送短息
 			   };
@@ -129,10 +149,133 @@
 		map.addControl(top_left_navigation);     
 		map.addControl(top_right_navigation);    
 	}
+	/////////////////////////////////////////////////////////////
+	// Ajax调用服务器数据进行绘图操作_5、请求服务器原始数据
+	function init_add_overlay(){
 
+		var opts = {
+						width : 180,     // 信息窗口宽度
+						height: 50,     // 信息窗口高度
+						title : "", // 信息窗口标题
+						enableMessage:true//设置允许信息窗发送短息
+					};
+        $.ajax({
+            url:'/shop',
+            type:"Get",
+            dataType:"json",
+            success:function(data){
+				console.log(data);
+
+                for(var i in data)
+                {
+                    var point = new BMap.Point(data[i].lng, data[i].lat);
+                    map.centerAndZoom(point, 15);
+                    
+                    var marker = new BMap.Marker(point); // 创建点
+                    
+                    var circle = new BMap.Circle(point,data[i].range_meter,{strokeColor:data[i].color, strokeWeight:2, strokeOpacity:0.5,fillColor:data[i].color}); //创建圆
+                        map.addOverlay(marker);            //增加点
+						map.addOverlay(circle);            //增加圆
+
+					var content ="地址：" + data[i].address;
+					var name = data[i].name+"(ID:"+data[i].shop_id+")";
+					addClickHandler(content,marker,name);
+				}
+				
+            }
+		})
+
+		function addClickHandler(content,marker,name){
+			marker.addEventListener("click",function(e){
+				openInfo(content,e,name)}
+			);
+		}
+		function openInfo(content,e,name){
+			var p = e.target;
+			var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+			opts.title = "店名："+name;
+			var infoWindow = new BMap.InfoWindow(content,opts);  // 创建信息窗口对象 
+			map.openInfoWindow(infoWindow,point); //开启信息窗口
+		}
+	}
+
+	/////////////////////////////////////////////////////////////////////
+	//三个按钮的点击事件
+	//1、刷新界面
+	$('#btn_refresh').click(function(){
+		location.reload();
+	});
+	//2、修改店铺信息
+	$('#btn_Update').click(function(){
+		var name_id = parseInt(document.getElementById('name').value);
+
+		var range_meter = document.getElementById('suggestRange').value;
+		var color = document.getElementById('color').value;
+
+		var body = {
+			range_meter: parseInt(range_meter),//转换为int类型的数
+			color:color,
+		}
+		$.ajax({
+			url:'/shop/'+name_id,
+			type:'Put',
+			data:JSON.stringify(body),
+			contentType:'application/json;charset=utf-8',
+			context:this,
+			success:function(data, status){
+				alert("修改店铺成功！");
+				location.reload();
+			}
+		})
+	});
+	//3、添加店铺信息
+	$('#btn_Insert').click(function(){
+		var name = document.getElementById('name').value;
+		var address = myValue;
+		var range_meter = document.getElementById('suggestRange').value;
+		var color = document.getElementById('color').value;
+
+		var body = {
+			name:name,
+			address:address,
+			lng:lng,
+			lat:lat,
+			range_meter: parseInt(range_meter),//转换为int类型的数
+			color:color,
+		}
+		$.ajax({
+			url:'/shop',
+			type:'post',
+			data:JSON.stringify(body),
+			contentType:'application/json;charset=utf-8',
+			context:this,
+			success:function(data, status){
+				alert("添加店铺成功！");
+				location.reload();
+			}
+		})
+	});
+	//4、删除店铺
+	$('#btn_Delete').click(function(){
+		var name_id = parseInt(document.getElementById('name').value);
+		var body = {
+		}
+		$.ajax({
+			url:'/shop/'+name_id,
+			type:'Delete',
+			data:JSON.stringify(body),
+			contentType:'application/json;charset=utf-8',
+			context:this,
+			success:function(data, status){
+				alert("删除店铺成功！");
+				location.reload();
+			}
+		})
+	});
 	//////////////////////////////////////////////
 	//初始化
 	add_control();
+	init_add_overlay();
 </script>
 
 

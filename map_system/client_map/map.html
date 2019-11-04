@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+		#allmap{height:500px;width:100%;}
+		#r-result{width:100%;}
+	</style>
+	<script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=llO66eNwUn9Lk61GBFKL2t9LVKra4E8O"></script>
+	<title>添加/删除覆盖物</title>
+</head>
+<body>
+	<div id="allmap"></div>
+</body>
+</html>
+
+<script src="assets/js/jquery.min.js "></script>
+<script type="text/javascript">
+	// 百度地图API功能
+    var map = new BMap.Map("allmap");
+	//添加覆盖物
+	function init_add_overlay(){
+        var shops;
+        var item;
+        $.ajax({
+            url:'/shop',
+            type:"Get",
+            dataType:"json",
+            success:function(data){
+                //data表示响应的body数据
+                //status表示响应的状态码
+                // HTTP请求执行成功之后，要执行的代码
+                // 在这个代码中更新数据。
+                // 如果不设置context，直接使用this.blogs是会出错的
+                // 因为此时的this表示当前$这样的jquery对象 而不是Vue对象
+                //加上 context 之后，this就表示 context 中的值
+                for(var i in data)
+                {
+                    var point = new BMap.Point(data[i].lng, data[i].lat);
+                    map.centerAndZoom(point, 15);
+                    
+                    var marker = new BMap.Marker(point); // 创建点
+                    
+                    var circle = new BMap.Circle(point,500,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5}); //创建圆
+                        map.addOverlay(marker);            //增加点
+                        map.addOverlay(circle);            //增加圆
+                }
+            }
+        })
+	}
+    init_add_overlay();
+</script>
+
