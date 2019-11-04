@@ -1,4 +1,4 @@
-drop database if exists map_system;
+#drop database if exists map_system;
   create database map_system;
   use map_system;
   drop table if exists shop_table;
