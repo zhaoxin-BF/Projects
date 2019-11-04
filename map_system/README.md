@@ -12,4 +12,3 @@
   ## range_meter int,//店铺范围
   ## color varchar(10)//店铺范围颜色
   ## );
-![image](https://github.com/zhaoxin-BF/Projects/map_system/client_map/assets/image/baidu_map.jpg)
