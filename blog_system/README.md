@@ -23,3 +23,6 @@ echo "博客服务器开启成功"
 地址：https://github.com/yhirose/cpp-httplib
 
 ### 5、mysql数据库需要设置一个持续在线的参数
+
+### 6、linux 进入mysql的参数
+```mysql -uroot -p   password:Zhaoxin..521```
