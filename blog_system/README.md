@@ -10,3 +10,16 @@
 source /opt/rh/devtoolset-7/enable                                                                                               
 echo "gcc 编译器以设置为7.3.1版本"
 ```
+### 2、为保持服务持续在后台运行可是用nohup &命令...简单的shell脚本
+```
+nohup ./Projects/blog_system/blog_server/server_blog &
+echo "博客服务器开启成功"
+```
+
+### 3、项目使用jsoncpp 可直接使用yum 进行安装
+``` yum install jsoncpp ```
+
+### 4、httplib库通过github下载即可
+地址：https://github.com/yhirose/cpp-httplib
+
+### 5、mysql数据库需要设置一个持续在线的参数
