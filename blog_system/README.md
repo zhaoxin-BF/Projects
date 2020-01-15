@@ -26,3 +26,17 @@ echo "博客服务器开启成功"
 
 ### 6、linux 进入mysql的参数
 ```mysql -uroot -p   password:Zhaoxin..521```
+
+### 7、Mysql数据库默认等待时间wait_timeout为8小时，所以当项目8八小时后为访问后将断开连接，导致项目访问不了数据库
+* 解决办法，在mysql shell 下修改等待时间，copy一下代码即可，时间修改为7*24小时，即一周的时间
+```
+show variables LIKE '%timeout%';
+show global variables LIKE '%timeout%';
+set global wait_timeout=2147483;
+set wait_timeout=2147483;
+set global interactive_timeout=31536000;
+set interactive_timeout=31536000;
+```
+* 参照解决办法链接
+  * CSDN：https://blog.csdn.net/lyy296293760/article/details/78833679
+  * 北峰blog：http://39.96.179.159:8888/article.html?blog_id=3
