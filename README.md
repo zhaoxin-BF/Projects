@@ -6,3 +6,4 @@
 ## 民俗文化资源管理系统访问地址：http://39.96.179.159:5000/     
 * 普通用户：   Account:common  Password:common
 * 管理员  ：  Account:juanjuan  Password:juanjuan
+* 超级管理员： 请call: 1835783944 QQ微信同
