@@ -25,7 +25,7 @@ echo "博客服务器开启成功"
 ### 5、mysql数据库需要设置一个持续在线的参数
 
 ### 6、linux 进入mysql的参数
-```mysql -uroot -p   password:Zhaoxin..521```
+```mysql -uroot -p   password:****```
 
 ### 7、Mysql数据库默认等待时间wait_timeout为8小时，所以当项目8八小时后为访问后将断开连接，导致项目访问不了数据库
 * 解决办法，在mysql shell 下修改等待时间，copy一下代码即可，时间修改为7*24小时，即一周的时间
